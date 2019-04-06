@@ -63,11 +63,11 @@ public class Wrist extends Thread {
     }
     
     public double getWristAngle() {
-        return encoder.get()/1024.0*360/117;
+        return encoder.get()/1024.0*360/208;
     }
 
     public double getCurSpeed() {
-		return encoder.getRate()/1024.0*360/117;
+		return encoder.getRate()/1024.0*360/208;
     }
     
     public boolean isFinished() {
@@ -102,11 +102,6 @@ public class Wrist extends Thread {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-            
-            if (!wristLanding.get()) {
-                zeroSensor();
-                //System.out.println("landed");
-            }
 
             double curTime = System.currentTimeMillis()/1000;
             double deltaTime = curTime-lastTime;
@@ -119,14 +114,27 @@ public class Wrist extends Thread {
             
             double output = wristController.getOutput(error, speed);
             //SmartDashboard.putString(SDLMotor, ""+error);
-            if (error < 0 && curAngle < 75) {
-                output /= 10;
+            if (error < 0 && curAngle < 65) {
+                //output /= 1.5;
+            } else if (error > 0 && curAngle < 150 && curAngle > 90) {
+                output /= 1.5;
+            }
+            if (error < 0 && curAngle == 0) {
+                output = 0;
             }
 
-            if (output > 80) {
-                output = 80;
-            } else if (output < -80) {
+            if (output < -80) {
                 output = -80;
+            }
+
+            if (!wristLanding.get()) {
+                zeroSensor();
+                SmartDashboard.putString(SDRMotor, "landing!");
+                if (error < 0) {
+                    output = 0;
+                }
+            } else {
+                SmartDashboard.putString(SDRMotor, "loft!");
             }
             updateSpeed(output/100);
 

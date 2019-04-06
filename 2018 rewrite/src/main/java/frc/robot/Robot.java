@@ -157,19 +157,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-	if (!driveStick.isAlive()) {
-		driveStick.start();
-	}
-	//if (!controlStick.isAlive()) {
-	//	controlStick.start();
-	//}
-	if (!drive.isAlive()) {
-		drive.start();
-	}
-	drive.zeroSensor();
-	AutoMode auto = new AutoMode(drive, lift, intake, 200);
-	auto.initialize();
-	auto.execute();
+	teleopInit();
+	//AutoMode auto = new AutoMode(drive, lift, intake, 200);
+	//auto.initialize();
+	//auto.execute();
     /*String priority = priorityChooser.getSelected();
 	String position = positionChooser.getSelected();
 	
@@ -223,7 +214,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-	drive.updateVelocity(-driveStick.getAxis(THROTTLE), driveStick.getAxis(TURN));
+	teleopPeriodic();
   }
 
   @Override
@@ -299,25 +290,36 @@ public class Robot extends TimedRobot {
 	boolean curRB = driveStick.getButton(RB);
 	if (curLB != lastLB && curLB == true) {
 		lift.setConstants(10, 100, 1.5);
-		wrist.updateConstants(3, 100, 0.6);
+		wrist.updateConstants(3, 100, 1.45);
 		lift.setLevel(false);
+
 		curLiftStage -= 1;
+
+		if (curLiftStage < -1) {
+			curLiftStage = -1;
+		}
+
 		curWristStage = 0;
 	} else if (curRB != lastRB && curRB == true) {
 		lift.setConstants(10, 100, 1.5);
-		wrist.updateConstants(3, 100, 0.6);
+		wrist.updateConstants(3, 100, 1.45);
 		lift.setLevel(false);
 		curLiftStage += 1;
 		curWristStage = 1;
-		if (curLiftStage == 3) {
+
+		if (curLiftStage > 3) {
+			curLiftStage = 3;
+		}
+		
+		if (curLiftStage == 0) {
+			curWristStage = 0;
+		} else if (curLiftStage == 2) {
 			curWristStage = 3;
+		} else if (curLiftStage == 3) {
+			curWristStage = 2;
 		}
 	}
-	if (curLiftStage < -1) {
-		curLiftStage = -1;
-	} else if (curLiftStage > 3) {
-		curLiftStage = 3;
-	}
+	
 	lastLB = curLB;
 	lastRB = curRB;
 
@@ -325,13 +327,13 @@ public class Robot extends TimedRobot {
 	if (curLiftStage == -1) {
 		curDesPos = -1;
 	} else if (curLiftStage == 0) {
-		curDesPos = 5.5;
+		curDesPos = 4; //5.5
 	}else if (curLiftStage == 1) {
-		curDesPos = 12;
+		curDesPos = 10;
 	} else if (curLiftStage == 2) {
 		curDesPos = 30;
 	} else if (curLiftStage == 3) {
-		curDesPos = 30;
+		curDesPos = 35;
 	}
 	if (driveStick.getButton(X)) {
 		curDesPos -= 4.5;
@@ -345,7 +347,11 @@ public class Robot extends TimedRobot {
 	}
 
 	//lift.updateSpeed(driveStick.getAxis(RIGHT_UP)-driveStick.getAxis(LEFT_UP));
-	//intake.updateSpeed(driveStick.getAxis(LEFT_UP)-driveStick.getAxis(RIGHT_UP));
+	if ((driveStick.getAxis(LEFT_UP)-driveStick.getAxis(RIGHT_UP)) == 0) {
+		intake.updateSpeed(0.09);
+	} else {
+		intake.updateSpeed(driveStick.getAxis(LEFT_UP)-driveStick.getAxis(RIGHT_UP));
+	}
 
 	int pov = driveStick.getPOV();
 	if (pov == 135 && driveStick.getButton(BACK)) {
@@ -354,7 +360,7 @@ public class Robot extends TimedRobot {
 			imu.reset();
 		}
 		walkerExtension.set(DoubleSolenoid.Value.kReverse);
-		wrist.updateConstants(12, 100, 0.08);
+		wrist.updateConstants(20, 100, 0.08);
 		Timer.delay(0.01);
 		lift.setDesAng(0);
 		lift.setLevel(true);
@@ -408,30 +414,32 @@ public class Robot extends TimedRobot {
 	if (curA != lastA && curA == true) {
 		curWristStage += 1;
 		lift.setLevel(false);
-		wrist.updateConstants(3, 100, 0.6);
+		wrist.updateConstants(3, 100, 1.45);
 	} else if (curB != lastB && curB == true) {
 		curWristStage -= 1;
 		lift.setLevel(false);
-		wrist.updateConstants(3, 100, 0.6);
+		wrist.updateConstants(3, 100, 1.45);
 	}
 	if (curWristStage < 0) {
 		curWristStage = 0;
-	} else if (curWristStage > 3) {
-		curWristStage = 3;
+	} else if (curWristStage > 4) {
+		curWristStage = 4;
 	}
 	lastA = curA;
 	lastB = curB;
 
 	if (driveStick.getButton(X)) {
-		wrist.setDesAng(105);
+		wrist.setDesAng(90);
 	}
 	if (curWristStage == 0) {
-		wrist.setDesAng(0);
+		wrist.setDesAng(-10);
 	} else if (curWristStage == 1) {
-		wrist.setDesAng(100);
+		wrist.setDesAng(80);
 	} else if (curWristStage == 2) {
 		wrist.setDesAng(135);
 	} else if (curWristStage == 3) {
+		wrist.setDesAng(195);
+	} else if (curWristStage == 4) {
 		wrist.setDesAng(220);
 	}
   }

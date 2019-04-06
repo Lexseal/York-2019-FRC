@@ -54,7 +54,7 @@ public class Elevator extends Thread {
 		station = DriverStation.getInstance();
 
 		heightController = new GeneralPID(10, 100, 1.5);
-		levelController = new GeneralPID(22, 100, 5);
+		levelController = new GeneralPID(22, 100, 4);
 		//speedController = new FeedForwardController(0, 0);
 		
 		zeroSensor();
@@ -80,6 +80,9 @@ public class Elevator extends Thread {
 
 	public void setDesPos(double pos) {
 		desPos = pos;
+		if (desPos > 50) {
+			desPos = 50;
+		}
 	}
 
 	public double[] getCurAng() {
@@ -223,9 +226,9 @@ public class Elevator extends Thread {
 				if (output < 0) {
 					output = 0;
 				}
-				SmartDashboard.putString(SDRMotor, "landing!");
+				//SmartDashboard.putString(SDRMotor, "landing!");
 			} else {
-				SmartDashboard.putString(SDRMotor, "liftOff!");
+				//SmartDashboard.putString(SDRMotor, "liftOff!");
 			}
 
 			updateSpeed(output/100);
