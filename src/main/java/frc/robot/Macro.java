@@ -1,11 +1,17 @@
 package frc.robot;
 
+/**
+ * The file that stores all the static final variables
+ */
 public class Macro {
 	public static final boolean betaFeature = false;
 	public static final boolean driveTestMode = false;
 	public static final boolean liftTestMode = false;
 	public static final boolean wristTestMode = false;
 	
+	/*
+	 * xbox controller mapping
+	 */
 	public static final int LEFT_X = 0;
 	public static final int THROTTLE = 1;
 	public static final int LEFT_UP = 2;
@@ -32,9 +38,16 @@ public class Macro {
 	public static final int INTAKE_BUTTON = 0;
 	public static final int SPIT_OUT_BUTTON = 0;
 	
+	/*
+	 * encoder channel
+	 */
 	public static final int encoderLeft = 0;
 	public static final int encoderRight = 2;
 	
+	/*
+	 * PID constants (I forgot which are which... should have kept
+	 * better organization :( )
+	 */
 	public static final double maxPID = 100;
 	public static final double constkP = 1.2; //2.4;
 	public static final double constkI = 0.1; //2;
@@ -49,10 +62,13 @@ public class Macro {
 	public static final double driveGain2 = 30;
 	public static final double drivekP2 =  18;
 	
-	public static final double maxOmega = 270; // degrees/sec
+	/* 
+	 * Robot max characteristics
+	 */
+	public static final double maxOmega = 270; // maximum turning rate (degrees/sec)
 	
 	public static final double maxSpeed = 3; // m/s
-	public static final double ticksPerRev = 4096;
+	public static final double ticksPerRev = 4096; // encoder tick per rev
 	public static final double wheelCircumfrence = 0.3192; // meters
 	
 	public static final double liftHeightPerRev = 12.543; // cm/rev
@@ -70,8 +86,20 @@ public class Macro {
 	public static final double liftHeight2 = 0;
 	public static final double liftHeight3 = 0;
 	
+	/*
+	 * autonomous parameters
+	 */
+	public static final String switchFirst = "switchFirst";
+	public static final String scaleFirst = "scaleFirst";
+	public static final String leftStart = "L";
+	public static final String middleStart = "M";
+	public static final String rightStart = "R";
+
 	public static final double recordTime = 15;
-	
+
+	/*
+	 * Misc debugging output
+	 */
 	public static final String SDcurAng = "DB/String 0";
 	public static final String SDdesAng = "DB/String 1";
 	public static final String SDcurPos = "DB/String 2";
@@ -85,10 +113,4 @@ public class Macro {
 	public static final String SDkD = "DB/String 7";
 	public static final String SDLMotor = "DB/String 8";
 	public static final String SDRMotor = "DB/String 9";
-	
-	public static final String switchFirst = "switchFirst";
-	public static final String scaleFirst = "scaleFirst";
-	public static final String leftStart = "L";
-	public static final String middleStart = "M";
-	public static final String rightStart = "R";
 }
